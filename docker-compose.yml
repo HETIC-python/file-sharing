@@ -1,0 +1,22 @@
+name: file-sharing
+services:
+    database:
+        image: mariadb:11
+        ports:
+            - "3309:3306"
+        volumes:
+            - ./init:/docker-entrypoint-initdb.d
+            - ./data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: "file-sharing"
+
+    app:
+        image: node:23
+        env_file:
+            - ./.env
+        ports:
+            - "8090:3000"
+        volumes:
+            - ./app:/app
+        command: 'sh -c "cd /app && npm run start"'
