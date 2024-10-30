@@ -1,9 +1,11 @@
 import { FormEvent, useState } from "react";
+import { API_URL } from "../utils/api";
 async function fileupload(file: FormData) {
-  const response = await fetch("http://localhost:3000/fileupoload", {
+  const response = await fetch(`${API_URL}/fileupoload`, {
     method: "POST",
     headers: {
       "Content-Type": "application/form-url-encoded",
+      "Authorization": "Bearer " + localStorage?.getItem("token"),
     },
     body: file,
   });

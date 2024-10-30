@@ -8,7 +8,7 @@ import Fileupload from "./components/Fileupload";
 
 function App() {
   return (
-    <div>
+    <div className="grid gap-10">
       <Navbar />
       <Routes>
         <Route index element={<Home />} />
