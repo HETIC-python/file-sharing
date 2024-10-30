@@ -28,6 +28,8 @@ services:
           - backend_node_modules:/usr/src/app/node_modules
         environment:
           - NODE_ENV=${NODE_ENV}
+        ports:
+          - "4040:4040"
         depends_on:
           database:
             condition: service_healthy
