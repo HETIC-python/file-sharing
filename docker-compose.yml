@@ -6,17 +6,34 @@ services:
             - ./.env
         volumes:
             - ./init:/docker-entrypoint-initdb.d
-            - ./data:/var/lib/mysql
+            - db_data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
             MYSQL_DATABASE: "file-sharing"
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD}"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
 
-    app:
-        image: node:23
-        env_file:
-            - ./.env
-        ports:
-            - "8090:3000"
+
+    backend:
+        build:
+          context: ./backend
+          dockerfile: Dockerfile
         volumes:
-            - ./app:/app
-        command: 'sh -c "cd /app && npm run start"'
+          - ./backend:/usr/src/app
+          - backend_node_modules:/usr/src/app/node_modules
+        environment:
+          - NODE_ENV=${NODE_ENV}
+        depends_on:
+          - database:
+            condition: service_healthy
+
+
+    frontend:
+        build:
+          context: ./frontend
+          dockerfile: Dockerfile
+        environment:
+          - NODE_ENV=${NODE_ENV}
