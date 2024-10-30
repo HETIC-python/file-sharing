@@ -11,10 +11,12 @@ services:
             MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
             MYSQL_DATABASE: "file-sharing"
         healthcheck:
-            test: ["CMD", "mysqladmin", "-u$DB_USER", "-p$DB_PASSWORD",  "ping", "-h", "localhost"]
-            interval: 5s
-            timeout: 5s
-            retries: 5
+          test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+          start_period: 5s
+          start_interval: 10s
+          interval: 5s
+          timeout: 5s
+          retries: 3
 
 
     backend:
@@ -41,7 +43,7 @@ services:
           - ./frontend:/usr/src/app
           - frontend_node_modules:/usr/src/app/node_modules
         ports: 
-          - "5973:5973"
+          - "5173:5173"
 
 volumes:
   db_data:

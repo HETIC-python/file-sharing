@@ -101,7 +101,9 @@ function File({ file }: { file: IFile }) {
       <td className="col-span-1">{file.size}</td>
       <td className="col-span-1">
         {copied ? (
-          <span onClick={() => setCopied(false)} className="text-green-500">Copied</span>
+          <span onClick={() => setCopied(false)} className="text-green-500">
+            Copied
+          </span>
         ) : (
           <button
             onClick={handleCopyFile}
