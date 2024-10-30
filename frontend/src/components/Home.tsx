@@ -37,29 +37,35 @@ function FilesList() {
     },
     {
       id: 1,
-      name: "file1.txt",
+      name: "file100000.txt",
       size: 1024,
     },
   ]);
 
   return (
     <div>
-      <ul className="grid">
-        {files.map((file) => (
-          <li key={file.id}>
-            <File file={file} />
-          </li>
-        ))}
-      </ul>
+      <table className="table-auto">
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>size</th>
+          </tr>
+        </thead>
+        <tbody>
+          {files.map((file) => (
+            <File key={file.id} file={file} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
 
 function File({ file }: { file: IFile }) {
   return (
-    <div className="grid grid-cols-2 gap-4">
-      <span className="font-bold col-span-1">{file.name}</span>
-      <span className="col-span-1">{file.size}</span>
-    </div>
+    <tr>
+      <td className="font-bold col-span-1">{file.name}</td>
+      <td className="col-span-1">{file.size}</td>
+    </tr>
   );
 }
