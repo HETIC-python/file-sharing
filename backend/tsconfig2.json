@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "outDir": "./dist",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "Node",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "node_modules/*",
+                "*"
+            ]
+        }
+    },
+    "include": [
+        "*/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+    "ts-node": {
+        "esm": true, /* ... Line to be added ... */
+      } 
+}
+
+
