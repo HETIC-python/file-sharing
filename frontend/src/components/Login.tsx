@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
+import { API_URL } from "../utils/api";
 async function login(email: string, password: string) {
-  const response = await fetch("http://localhost:3000/signup", {
+  const response = await fetch(`${API_URL}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -19,16 +20,22 @@ const INPUT_WRAPPER_CLASS = "flex flex-col gap-4";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log("form submitted");
-    const res = await login(email, password);
-    if (res.success) {
-      console.log("Success");
+    try {
+      const res = await login(email, password);
+      if (res.success) {
+        console.log("Success");
+      }
+    } catch (error: any) {
+      setError(error.message || "Failed to login");
     }
   };
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex flex-col gap-5 justify-center items-center">
+      {error && <div className="text-red-500">{error}</div>}
       <form onSubmit={onSubmit} className="grid gap-6 w-2/4">
         <div className={INPUT_WRAPPER_CLASS}>
           <label htmlFor="email">Email</label>
