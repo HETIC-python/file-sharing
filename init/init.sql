@@ -1,14 +1,26 @@
-create table files
-(
-    id        int          not null auto_increment PRIMARY KEY,
-    name      varchar(255),
-    size      int(10)
+CREATE TABLE files (
+    id   INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    size INT(10)
 );
-create table user 
-(
-    id        int          not null auto_increment PRIMARY KEY,
-    first_name varchar(255),
-    last_name  varchar(255),
-    email     varchar(255),
-    password  varchar(255)
-)
+
+
+CREATE TABLE users (
+    id         INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255),
+    last_name  VARCHAR(255),
+    email      VARCHAR(255) NOT NULL,
+    password   VARCHAR(255) NOT NULL
+);
+
+
+create table link 
+(    
+    id        INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id   INT          NOT NULL,
+    file_id   VARCHAR(255) NOT NULL,
+    link      VARCHAR(255) NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (file_id) REFERENCES files(id)
+);
