@@ -11,7 +11,7 @@ services:
             MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
             MYSQL_DATABASE: "file-sharing"
         healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD}"]
+            test: ["CMD", "mysqladmin", "-u$DB_USER", "-p$DB_PASSWORD",  "ping", "-h", "localhost"]
             interval: 5s
             timeout: 5s
             retries: 5
@@ -27,7 +27,7 @@ services:
         environment:
           - NODE_ENV=${NODE_ENV}
         depends_on:
-          - database:
+          database:
             condition: service_healthy
 
 
@@ -37,3 +37,13 @@ services:
           dockerfile: Dockerfile
         environment:
           - NODE_ENV=${NODE_ENV}
+        volumes:
+          - ./frontend:/usr/src/app
+          - frontend_node_modules:/usr/src/app/node_modules
+        ports: 
+          - "5973:5973"
+
+volumes:
+  db_data:
+  backend_node_modules:
+  frontend_node_modules:
