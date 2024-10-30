@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise'
+import mysql from 'mysql2/promise';
 
 export default async function connect() {
 const database = mysql.createPool({
@@ -6,7 +6,7 @@ const database = mysql.createPool({
     port: 3306,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: "express"
+    database: "file-sharing"
 })
 return database
 }
