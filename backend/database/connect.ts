@@ -1,7 +1,8 @@
-import mysql from 'mysql2/promise';
+import mysql from 'mysql2/promise'
+import * as process from "node:process";
 
 export async function connect() {
-const database = await mysql.createConnection({
+const database = mysql.createPool({
     host: process.env.DB_HOST,
     port: 3306,
     user: process.env.DB_USER,

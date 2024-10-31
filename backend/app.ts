@@ -1,27 +1,31 @@
 import express from 'express';
 import path from 'path';
-import cookieParser from 'cookie-parser';
-import logger from 'morgan';
-import cors from 'cors';
+import {getRepository} from "./repository/repository";
+import {getFileRoutes} from "./routes/file";
+import {App} from "./type/app";
+import {connect} from "./database/connect";
 
-import indexRouter from './routes';
-import usersRouter from './routes/users';
+var server = express();
 
-const app = express();
-app.use(cors())
+server.use(express.json());
+server.use(express.urlencoded({ extended: false }));
+server.use(express.static(path.join('public')));
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+const database = await connect()
 
 const PORT = process.env.PORT || 4040;
-app.listen(PORT, () => {
-    console.log('Server is running on port: ' + PORT);
-})
 
 // export default app;
+const repository = getRepository(database)
+
+const app: App = {
+    repository
+}
+
+const fileRoutes = getFileRoutes(app)
+
+server.use(fileRoutes)
+
+server.listen(PORT, () => {
+    console.log('Server is running on port: ' + PORT);
+})
