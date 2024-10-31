@@ -41,7 +41,8 @@ router.post('/login',
             res.status(401).json({ token: "Identifiants incorrects" });
             return
         }
-        const user = user_result as any;
+        const user = user_result[0] as any;
+        console.log(user);
         if (!bcrypt.compareSync(password, user.password)) {
             res.status(401).json({ token: "Identifiants incorrects" });
             return
@@ -132,6 +133,7 @@ export function authenticateToken(req: Request, res: Response, next: NextFunctio
 
     jwt.verify(token, process.env.JWT_SECRET || 'default_secret', (err: any, user: any) => {
         if (err) return res.sendStatus(403);
+        // check db ici
         (req as any).user = user;
         next();
     });

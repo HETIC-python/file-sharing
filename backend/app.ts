@@ -4,19 +4,19 @@ import {getRepository} from "./repository/repository";
 import {getFileRoutes} from "./routes/file";
 import {App} from "./type/app";
 import {connect, connectPool} from "./database/connect";
-
+import cors from 'cors';
 var server = express();
 import indexRouter from './routes';
 import usersRouter from './routes/users';
 import authRouter from './routes/auth';
 
+server.use(cors());
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 server.use(express.static(path.join('public')));
 server.use(express.static(path.join(__dirname, 'public')));
 
 const database = connectPool()
-server.use(express.json());
 
 server.use('/', indexRouter);
 server.use('/users', usersRouter);

@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { API_URL } from "../utils/api";
+import Layout from "./Layout";
 async function signup(
   email: string,
   password: string,
@@ -50,51 +51,53 @@ export default function Signup() {
     }
   };
   return (
-    <div className="flex flex-col gap-5 justify-center items-center">
-      {error && <div className="text-red-500">{error}</div>}
-      <form onSubmit={onSubmit} className="grid gap-6 w-2/4">
-        <div className={INPUT_WRAPPER_CLASS}>
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+    <Layout>
+      <div className="flex flex-col gap-5 justify-center items-center">
+        {error && <div className="text-red-500">{error}</div>}
+        <form onSubmit={onSubmit} className="grid gap-6 w-2/4">
+          <div className={INPUT_WRAPPER_CLASS}>
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-        <div className={INPUT_WRAPPER_CLASS}>
-          <label htmlFor="fname">Last name</label>
-          <input
-            type="text"
-            id="fname"
-            onChange={(e) => setFName(e.target.value)}
-          />
-        </div>
-        <div className={INPUT_WRAPPER_CLASS}>
-          <label htmlFor="lname">First name</label>
-          <input
-            type="text"
-            id="lname"
-            onChange={(e) => setLName(e.target.value)}
-          />
-        </div>
-        <div className={INPUT_WRAPPER_CLASS}>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className={INPUT_WRAPPER_CLASS}>
-          <button
-            className="bg-slate-900 rounded-xl p-2 text-white"
-            type="submit"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
-    </div>
+          <div className={INPUT_WRAPPER_CLASS}>
+            <label htmlFor="fname">Last name</label>
+            <input
+              type="text"
+              id="fname"
+              onChange={(e) => setFName(e.target.value)}
+            />
+          </div>
+          <div className={INPUT_WRAPPER_CLASS}>
+            <label htmlFor="lname">First name</label>
+            <input
+              type="text"
+              id="lname"
+              onChange={(e) => setLName(e.target.value)}
+            />
+          </div>
+          <div className={INPUT_WRAPPER_CLASS}>
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className={INPUT_WRAPPER_CLASS}>
+            <button
+              className="bg-slate-900 rounded-xl p-2 text-white"
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </Layout>
   );
 }

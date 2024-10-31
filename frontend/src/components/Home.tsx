@@ -1,12 +1,15 @@
 import React from "react";
 import { API_URL } from "../utils/api";
+import Layout from "./Layout";
 
 export default function Home() {
   return (
-    <div className="grid">
-      <Header />
-      <FilesList />
-    </div>
+    <Layout>
+      <div className="grid">
+        <Header />
+        <FilesList />
+      </div>
+    </Layout>
   );
 }
 
