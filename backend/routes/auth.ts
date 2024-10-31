@@ -36,13 +36,21 @@ router.post('/login',
     const con = await connect();
     
     try {
-        const [user_result] = await con.execute("SELECT * FROM users WHERE email = ?", [email]);
+        const [user_result] = await con.execute("SELECT id,first_name,last_name,email,password FROM users WHERE email = ?", [email]);
         if (!user_result) {
             res.status(401).json({ token: "Identifiants incorrects" });
             return
         }
+        const user = user_result as any;
+        if (!bcrypt.compareSync(password, user.password)) {
+            res.status(401).json({ token: "Identifiants incorrects" });
+            return
+        }
         
-        const token = generateToken(null);
+        const token = generateToken({
+            id: user.id,
+            firstName: user.first_name,
+            lastName: user.last_name});
         res.json({ token });
     } 
     catch (error) {
