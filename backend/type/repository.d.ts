@@ -1,5 +1,9 @@
 import {FileRepositoryI} from "./file";
+import {SharingLinkRepositoryI} from "./sharing_link";
+import {UserRepositoryI} from "./user";
 
 export interface Repository {
-    todoRepository: FileRepositoryI
+    fileRepository: FileRepositoryI,
+    sharingLinkRepository: SharingLinkRepositoryI,
+    userRepository: UserRepositoryI
 }

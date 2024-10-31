@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import UserI from '../type/user';
+import {type UserI} from '../type/user';
 import connect from "../database/connect";
 import { RowDataPacket } from "mysql2";
 import {body,validationResult} from 'express-validator';
@@ -94,7 +94,8 @@ router.post('/signup',
 
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        const user: UserI = { firstName, lastName, email, password: hashedPassword };
+        // const user: UserI = {
+         //firstName, lastName, email, password: hashedPassword };
         const [user_result] = await con.execute("INSERT INTO users (first_name, last_name, email, password)  VALUES (?,?,?,?)", [firstName, lastName, email, hashedPassword]);
       
         // Define the type for the selected user rows

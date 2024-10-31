@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import UserI from '../type/user';
+import {type UserI} from '../type/user';
 import bcrypt from "bcrypt";
 import connect from "../database/connect";
 import {body,validationResult} from 'express-validator';
@@ -31,7 +31,7 @@ router.post(
 
     try {
       const hashedPassword = await bcrypt.hash(password, saltRounds);
-      const user: UserI = { firstName, lastName, email, password: hashedPassword };
+      const user = { firstName, lastName, email, password: hashedPassword } as UserI;
       const con = await connect();
       const [user_result] = await con.execute("INSERT INTO users SET ?", user)
       res.status(201).json({ user: user_result });
