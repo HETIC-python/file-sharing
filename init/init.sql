@@ -14,8 +14,7 @@ CREATE TABLE users (
 );
 
 
-create table link 
-(    
+create table links(    
     id        INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id   INT          NOT NULL,
     file_id   VARCHAR(255) NOT NULL,
