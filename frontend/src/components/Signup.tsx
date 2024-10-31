@@ -18,7 +18,7 @@ async function signup(
       lastName: lName,
     }),
   });
-  if (response.status !== 200) {
+  if (!response.ok) {
     throw new Error("Failed to sign up");
   }
   return response.json();
@@ -35,9 +35,13 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setError("");
     console.log("form submitted");
     try {
       const res = await signup(email, password, fName, lName);
+      if (res?.token) {
+        localStorage.setItem("token", res.token);
+      }
       if (res.success) {
         console.log("Success");
       }
