@@ -97,8 +97,7 @@ export function download(app: App) {
         if (file === null){
             return res.json({status:404, success:false, message: "File not found"})
         }
-        console.log(file);
-        console.log(sharing_link);
+        console.log(sharing_link.expiresAt);
 
         if (new Date() > sharing_link.expiresAt){
             return res.json({status:403, success:false, message: "Link expired"})

@@ -23,7 +23,7 @@ export function generate(app: App) {
         
         const currentDate: Date = new Date();
         const expireDate: Date = new Date(currentDate)
-        expireDate.setHours(currentDate.getSeconds() + 20)
+        expireDate.setHours(currentDate.getHours() + 1) // 1 hour expiration date
         ;
         const sharing_link =await app.repository.sharingLinkRepository.insert(
             {
