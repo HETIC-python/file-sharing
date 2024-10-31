@@ -11,10 +11,13 @@ const users: Array<{ id: number; firstName: string; lastName: string; email: str
 const saltRounds = 10;
 
 // Function to generate JWT token
-function generateToken(user: { id: number; firstName: string; lastName: string } | null) {
+function generateToken(user: { id: number,email: string} | null) {
     if(user === null) return
     return jwt.sign(
-        { id: user.id, name: `${user.firstName} ${user.lastName}` },
+        {
+            id: user.id, 
+            email: user.email
+        },
         process.env.JWT_SECRET || 'default_secret', // Fallback secret for development
         { expiresIn: '1h' }
     );
@@ -49,8 +52,8 @@ router.post('/login',
         
         const token = generateToken({
             id: user.id,
-            firstName: user.first_name,
-            lastName: user.last_name});
+            email: user.email
+        });
         res.json({ token });
     } 
     catch (error) {
@@ -94,21 +97,16 @@ router.post('/signup',
 
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        // const user: UserI = {
-         //firstName, lastName, email, password: hashedPassword };
         const [user_result] = await con.execute("INSERT INTO users (first_name, last_name, email, password)  VALUES (?,?,?,?)", [firstName, lastName, email, hashedPassword]);
       
-        // Define the type for the selected user rows
-        type SelectedUser = { id: number; firstName: string; lastName: string };
         const [selected_user] = await con.execute<RowDataPacket[]>(
-          "SELECT id, first_name, last_name FROM users WHERE email = ?",
+          "SELECT id,email FROM users WHERE email = ?",
           [email]
         );
       
         const token = generateToken({
-          id: selected_user[0].id,
-          firstName: selected_user[0].firstName,
-          lastName: selected_user[0].lastName
+            id: selected_user[0].id,
+            email: selected_user[0].email
         });
         
         res.status(201).json({ token });
@@ -122,7 +120,7 @@ router.post('/signup',
 });
 
 // Middleware for token authentication
-export function authenticateToken(req: Request, res: Response, next: NextFunction) {
+export async function authenticateToken(req: Request, res: Response, next: NextFunction) {
     const token = req.headers['authorization']?.split(' ')[1];
 
     if (!token) {
@@ -130,10 +128,30 @@ export function authenticateToken(req: Request, res: Response, next: NextFunctio
         return
     }
 
-    jwt.verify(token, process.env.JWT_SECRET || 'default_secret', (err: any, user: any) => {
-        if (err) return res.sendStatus(403);
+    jwt.verify(token, process.env.JWT_SECRET || 'default_secret', async (err: any, user: any) => {
+        if (err) {
+            res.sendStatus(403);
+            return 
+        }
+
+        const emailVerification = user.email; 
+        const userId = user.id; 
+
+        const dbUser = await connect().execute<RowDataPacket[]>(
+            "SELECT id,email FROM users WHERE email = ?",
+            [emailVerification]
+        );
+        if(userId !== (dbUser[0] as any).id) {
+            res.sendStatus(403);
+            return
+        }
+        if (!dbUser) {
+            res.sendStatus(403);
+            return 
+        }
+
         (req as any).user = user;
-        next();
+        next(); 
     });
 }
 
