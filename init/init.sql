@@ -19,6 +19,8 @@ create table links(
     user_id   INT          NOT NULL,
     file_id   VARCHAR(255) NOT NULL,
     link      VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    exprires_at TIMESTAMP ,
 
     FOREIGN KEY (user_id) REFERENCES users(id)
     FOREIGN KEY (file_id) REFERENCES files(id)
