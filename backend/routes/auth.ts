@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import UserI from '../type/user';
+import {type UserI} from '../type/user';
 import connect from "../database/connect";
 import { RowDataPacket } from "mysql2";
 import {body,validationResult} from 'express-validator';
@@ -36,13 +36,21 @@ router.post('/login',
     const con = await connect();
     
     try {
-        const [user_result] = await con.execute("SELECT * FROM users WHERE email = ?", [email]);
+        const [user_result] = await con.execute("SELECT id,first_name,last_name,email,password FROM users WHERE email = ?", [email]);
         if (!user_result) {
             res.status(401).json({ token: "Identifiants incorrects" });
             return
         }
+        const user = user_result as any;
+        if (!bcrypt.compareSync(password, user.password)) {
+            res.status(401).json({ token: "Identifiants incorrects" });
+            return
+        }
         
-        const token = generateToken(null);
+        const token = generateToken({
+            id: user.id,
+            firstName: user.first_name,
+            lastName: user.last_name});
         res.json({ token });
     } 
     catch (error) {
@@ -86,7 +94,8 @@ router.post('/signup',
 
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        const user: UserI = { firstName, lastName, email, password: hashedPassword };
+        // const user: UserI = {
+         //firstName, lastName, email, password: hashedPassword };
         const [user_result] = await con.execute("INSERT INTO users (first_name, last_name, email, password)  VALUES (?,?,?,?)", [firstName, lastName, email, hashedPassword]);
       
         // Define the type for the selected user rows
@@ -113,7 +122,7 @@ router.post('/signup',
 });
 
 // Middleware for token authentication
-function authenticateToken(req: Request, res: Response, next: NextFunction) {
+export function authenticateToken(req: Request, res: Response, next: NextFunction) {
     const token = req.headers['authorization']?.split(' ')[1];
 
     if (!token) {
