@@ -1,17 +1,24 @@
 import { Link } from "react-router-dom";
+import { isAuthenticated } from "../utils/auth";
 
-const links = [
+const normal_links = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
   { label: "Signup", href: "/signup" },
   { label: "Signin", href: "/login" },
-  { label: "File upload", href: "/fileupload" },
 ];
 
+const authLinks = [
+  { label: "Home", href: "/" },
+  { label: "File upload", href: "/fileupload" },
+];
 export default function Navbar() {
+  const authenticated = isAuthenticated();
+  const links = authenticated ? authLinks : normal_links;
   return (
     <nav className="flex justify-between items-center">
-      <p className="text-white bg-teal-500 rounded-xl px-4 py-2 w-1/5 select-none">SHAREPOINT</p>
+      <p className="text-white bg-teal-500 rounded-xl px-4 py-2 w-1/5 select-none">
+        SHAREPOINT
+      </p>
       <ul className="flex gap-4">
         {links.map(({ label, href }) => (
           <li key={href}>

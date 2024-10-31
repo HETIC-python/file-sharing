@@ -44,7 +44,8 @@ router.post('/login',
             res.status(401).json({ token: "Identifiants incorrects" });
             return
         }
-        const user = user_result as any;
+        const user = user_result[0] as any;
+        console.log(user);
         if (!bcrypt.compareSync(password, user.password)) {
             res.status(401).json({ token: "Identifiants incorrects" });
             return
