@@ -9,7 +9,7 @@ export interface FileI {
 export interface FileRepositoryI {
     getAll: () => Promise<FileI[]>
     getAllFromUser: (user_id:number) => Promise<FileI[]>
-    getOne: (id: number) => Promise<FileI>
+    getOne: (id: number) => Promise<FileI|null>
     insert: (file: FileI) => Promise<FileI>
     update: (file: FileI) => Promise<FileI>
     hasRight: ({id: number, userId: number}) => Promise<boolean>

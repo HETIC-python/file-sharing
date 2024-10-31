@@ -9,6 +9,7 @@ var server = express();
 import indexRouter from './routes';
 import usersRouter from './routes/users';
 import authRouter from './routes/auth';
+import { getLinkRoutes } from './routes/sharing_link';
 
 server.use(cors());
 server.use(express.json());
@@ -32,8 +33,9 @@ const app: App = {
 }
 
 const fileRoutes = getFileRoutes(app)
-
+const sharingLinkRoutes = getLinkRoutes(app)
 server.use(fileRoutes)
+server.use(sharingLinkRoutes)
 
 server.listen(PORT, () => {
     console.log('Server is running on port: ' + PORT);
