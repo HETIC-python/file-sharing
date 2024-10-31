@@ -4,6 +4,14 @@ export interface UserI {
     lastName: string,
     email: string,
     password: string,
+    maxStorage: number,
+    createdAt: Date
 }
 
-export default UserI;
+export interface UserRepositoryI {
+    getAll: () => Promise<UserI[]>
+    getOne: (id: number) => Promise<UserI>
+    insert: (user: UserI) => Promise<UserI>
+    update: (user: UserI) => Promise<UserI>
+    delete: (id: number) => Promise<void>
+}

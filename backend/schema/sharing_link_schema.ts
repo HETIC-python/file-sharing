@@ -1,27 +1,25 @@
-export const file_schema = {
-    id:{
+import { isDate } from "util/types";
+
+export const sharing_link_schema = {
+    id: {
         optional: true,
         isInt: true
     },
-    filename: {
+    link: {
         exists: true,
         notEmpty: true,
         escape: true
     },
-    size: {
+    expiresAt: {
         exists: true,
-        isInt: true
+        isDate: true
     },
-    mimeType: {
-        exists: true,
-        notEmpty: true
-    },
-    userId: {
+    fileId: {
         exists: true,
         isUUID: true
     },
     createdAt: {
-        optional: true,
+        exists: true,
         isDate: true
-    }
+    },
 }
