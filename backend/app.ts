@@ -6,6 +6,7 @@ import cors from 'cors';
 
 import indexRouter from './routes';
 import usersRouter from './routes/users';
+import authRouter from './routes/auth';
 
 const app = express();
 app.use(cors())
@@ -18,6 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 
 const PORT = process.env.PORT || 4040;
 app.listen(PORT, () => {

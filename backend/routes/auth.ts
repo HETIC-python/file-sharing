@@ -70,10 +70,10 @@ router.post('/signup',
 
     const con = await connect();
     const { firstName, lastName, email, password } = req.body;
-
+    console.log(firstName, lastName, email, password);
     try {
         const [user_result] = await con.execute("SELECT * FROM users WHERE email = ?", [email]);
-        if (user_result) {
+        if ((user_result as Array<any>).length > 0) {
             res.status(400).json({ msg: "Utilisateur déjà existant" });
             return
         }
@@ -87,12 +87,12 @@ router.post('/signup',
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const user: UserI = { firstName, lastName, email, password: hashedPassword };
-        const [user_result] = await con.execute("INSERT INTO users SET ?", user);
+        const [user_result] = await con.execute("INSERT INTO users (first_name, last_name, email, password)  VALUES (?,?,?,?)", [firstName, lastName, email, hashedPassword]);
       
         // Define the type for the selected user rows
         type SelectedUser = { id: number; firstName: string; lastName: string };
         const [selected_user] = await con.execute<RowDataPacket[]>(
-          "SELECT id, firstName, lastName FROM users WHERE email = ?",
+          "SELECT id, first_name, last_name FROM users WHERE email = ?",
           [email]
         );
       
