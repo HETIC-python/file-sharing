@@ -3,9 +3,11 @@ import express from "express";
 import multer from "multer";
 import {checkSchema} from "express-validator";
 import {user_schema} from "../schema/user_schema";
-import {addFile,download} from "../controller/file_controller";
+import {addFile,download, getFilesFromUser} from "../controller/file_controller";
 import {App} from "../type/app";
 import exp from "constants";
+import { file_schema } from "../schema/file_schema";
+import { sharing_link_schema } from "../schema/sharing_link_schema";
 dotenv.config();
 
 
@@ -23,8 +25,21 @@ export function getFileRoutes(app: App) {
     });
   const upload = multer({ storage: storage });
   
-  router.post("/upload/:user_id", checkSchema(user_schema), upload.single("file"), addFile(app));
-  router.get("/download/:hash", checkSchema(user_schema), download(app));
+  router.post("/upload/:user_id", checkSchema(file_schema), upload.single("file"), async (req, res, next) => {
+    try {
+      await addFile(app)(req, res, next);
+    } catch (err) {
+      next(err);
+    }
+  });
+  router.get("/public_link/download/:hash", async (req, res, next) => {
+    try {
+      await download(app)(req, res, next);
+    } catch (err) {
+      next(err);
+    }});
+
+  router.get('/files/:user_id', getFilesFromUser(app));
 
   return router;
 };

@@ -10,8 +10,9 @@ export interface UserI {
 
 export interface UserRepositoryI {
     getAll: () => Promise<UserI[]>
-    getOne: (id: number) => Promise<UserI>
+    getOne: (id: number) => Promise<UserI|null>
     insert: (user: UserI) => Promise<UserI>
     update: (user: UserI) => Promise<UserI>
     delete: (id: number) => Promise<void>
+    getDisponibleStorage: (id: number) => Promise<number>
 }

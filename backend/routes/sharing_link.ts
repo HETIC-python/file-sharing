@@ -9,9 +9,18 @@ import exp from "constants";
 dotenv.config();
 
 
-export function getFileRoutes(app: App) {
+export function getLinkRoutes(app: App) {
   const router = express.Router();
   
-  router.get("/sharing_link/:user_id/:file_id", checkSchema(sharing_link_schema), generate(app));
+  router.get("/sharing_link/:user_id/:file_id", checkSchema(sharing_link_schema), async (req, res, next) => {
+    try {
+      const result = await generate(app)(req, res, next);
+      if (result) {
+        res.send(result);
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
   return router;
 };
