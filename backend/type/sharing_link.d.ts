@@ -3,7 +3,7 @@ export interface SharingLinkI {
     fileId: number,
     link: string,
     createdAt: Date,
-    expireAt: Date
+    expiresAt: Date
 }
 
 export interface SharingLinkRepositoryI {

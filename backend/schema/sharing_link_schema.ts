@@ -10,7 +10,7 @@ export const sharing_link_schema = {
         notEmpty: true,
         escape: true
     },
-    expireAt: {
+    expiresAt: {
         exists: true,
         isDate: true
     },

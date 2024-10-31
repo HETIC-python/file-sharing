@@ -1,6 +1,5 @@
-import e, {Request, Response, NextFunction} from "express";
-import {validationResult} from "express-validator";
-import {App} from "../type/app";
+import { NextFunction, Request, Response } from "express";
+import { App } from "../type/app";
 
 export function generate(app: App) {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +19,7 @@ export function generate(app: App) {
                 fileId: parseInt(req.params.file_id),
                 link: public_file_link,
                 createdAt: currentDate,
-                expireAt: expireDate
+                expiresAt: expireDate
             }
         ).then(data =>{return data})
 

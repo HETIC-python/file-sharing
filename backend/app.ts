@@ -11,7 +11,7 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 server.use(express.static(path.join('public')));
 
-const database = await connect()
+const database = connect()
 
 const PORT = process.env.PORT || 4040;
 

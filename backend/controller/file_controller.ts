@@ -39,13 +39,13 @@ export function addFile(app: App) {
         if (!errors.isEmpty()) {
             res.json(errors.array())
         }
-
+        //@ts-ignore
         const file = req.file;
         console.log(file);
         
         if (!file) {
         const error = new Error("Please upload a file");
-        error.httpStatusCode = 400;
+        (error as any).httpStatusCode = 400;
         return next(error);
         }
 
@@ -66,11 +66,11 @@ export function download(app: App) {
         const file = await app.repository.fileRepository.getOne(parseInt(atob(req.params.hash))).then(data =>{return data})
         const sharing_link = await app.repository.sharingLinkRepository.getOneByLink(req.url).then(data =>{return data})
         
-        if (new Date() > sharing_link.expireAt){
+        if (new Date() > sharing_link.expiresAt){
             res.status(403).send()
             return
         }
-        
+
         res.download(`upload/${file.filename}`)
         res.send()
     }

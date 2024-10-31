@@ -26,6 +26,10 @@ export function getFileRepository(database: Pool): FileRepositoryI {
         update(file: FileI): Promise<FileI> {
             database.execute("UPDATE file SET filename = ?, size = ?, user_id = ? WHERE id = ?", [file.filename, file.size, file.userId, file.id]);
             return Promise.resolve({id: file.id, filename: file.filename, size: file.size, mimeType:file.mimeType, userId: file.size});
+        },
+        hasRight: async ({id, userId}) => {
+            const [results] = await database.execute("SELECT id FROM file WHERE id = ? AND user_id = ?", [id, userId]);
+            return (results as any).length > 0;
         }
     };
 }
