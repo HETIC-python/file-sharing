@@ -21,7 +21,7 @@ router.post("/upload/:user_id", upload.single("uploaded_file"), (req, res, next)
     const file = req.file;
     if (!file) {
       const error = new Error("Please upload a file");
-      (error as any ).httpStatusCode = 400;
+      error.httpStatusCode = 400;
       return next(error);
     }
     

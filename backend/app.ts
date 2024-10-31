@@ -4,8 +4,13 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from 'cors';
 
+<<<<<<< Updated upstream
 import indexRouter from './routes';
 import usersRouter from './routes/users';
+=======
+import indexRouter from "./router/index";
+import usersRouter from "./router/users";
+>>>>>>> Stashed changes
 
 const app = express();
 app.use(cors())
