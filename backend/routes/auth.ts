@@ -84,7 +84,7 @@ router.post('/signup',
     const { firstName, lastName, email, password } = req.body;
     console.log(firstName, lastName, email, password);
     try {
-        const [user_result] = await con.execute("SELECT * FROM users WHERE email = ?", [email]);
+        const [user_result] = await con.execute("SELECT id FROM users WHERE email = ?", [email]);
         if ((user_result as Array<any>).length > 0) {
             res.status(400).json({ msg: "Utilisateur déjà existant" });
             return
@@ -137,8 +137,8 @@ export async function authenticateToken(req: Request, res: Response, next: NextF
 
         const emailVerification = user.email; 
         const userId = user.id; 
-
-        const dbUser = await connect().execute<RowDataPacket[]>(
+        
+        const [dbUser] = await connect().execute<RowDataPacket[]>(
             "SELECT id,email FROM users WHERE email = ?",
             [emailVerification]
         );
@@ -151,13 +151,14 @@ export async function authenticateToken(req: Request, res: Response, next: NextF
             return 
         }
 
-        (req as any).user = user;
+        (req as any).user = dbUser[0];
         next(); 
     });
 }
 
 // Protected route
 router.get('/protected', authenticateToken, (req: Request, res: Response) => {
+    console.log((req as any).user, "hhhhhh");
     res.json({ message: 'Vous êtes autorisé', user: (req as any ).user });
 });
 
