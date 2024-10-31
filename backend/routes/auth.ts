@@ -1,8 +1,14 @@
 import express, { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import UserI from '../type/user';
+import connect from "../database/connect";
+import { RowDataPacket } from "mysql2";
+import {body,validationResult} from 'express-validator';
+import bcrypt from "bcrypt";
 
 const router = express.Router();
 const users: Array<{ id: number; firstName: string; lastName: string; email: string; password: string }> = [];
+const saltRounds = 10;
 
 // Function to generate JWT token
 function generateToken(user: { id: number; firstName: string; lastName: string } | null) {
@@ -20,34 +26,90 @@ router.get('/', (req: Request, res: Response) => {
 });
 
 // Login route
-router.post('/login', (req: Request, res: Response) => {
-    const { email, password } = {email: "", password: ""};
+router.post('/login',
+  [
+    body('email').isEmail().withMessage('Please provide a valid email').normalizeEmail(),
+  ], 
+    async (req: Request, res: Response) => {
+    const { email, password } = req.body;
 
-    const user = users.find(u => u.email === email);
-    if (!user || user.password !== password) {
-        res.status(401).json({ token: "Identifiants incorrects" });
+    const con = await connect();
+    
+    try {
+        const [user_result] = await con.execute("SELECT * FROM users WHERE email = ?", [email]);
+        if (!user_result) {
+            res.status(401).json({ token: "Identifiants incorrects" });
+            return
+        }
+        
+        const token = generateToken(null);
+        res.json({ token });
+    } 
+    catch (error) {
+        console.error("Error during login:", error);
+        res.status(500).send("Internal Server Error");
         return
     }
-
-    const token = generateToken(null);
-    res.json({ token });
 });
 
 // Signup route
-router.post('/signup', (req: Request, res: Response) => {
-    const { firstName, lastName, email, password } = req.body;
+router.post('/signup',
+    [
+    body('firstName').trim().notEmpty().withMessage('First name is required'),
+    body('lastName').trim().notEmpty().withMessage('Last name is required'),
+    body('email').isEmail().withMessage('Please provide a valid email').normalizeEmail(),
+    body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
+  ], 
+  async (req: Request, res: Response) => {
 
-    const existingUser = users.find(u => u.email === email);
-    if (existingUser) {
-        res.status(400).json({ msg: "Utilisateur déjà existant" });
-        return 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
     }
 
-    const newUser = { id: users.length + 1, firstName, lastName, email, password };
-    users.push(newUser);
+    const con = await connect();
+    const { firstName, lastName, email, password } = req.body;
 
-    const token = generateToken(newUser);
-    res.status(201).json({ token });
+    try {
+        const [user_result] = await con.execute("SELECT * FROM users WHERE email = ?", [email]);
+        if (user_result) {
+            res.status(400).json({ msg: "Utilisateur déjà existant" });
+            return
+        }
+    } 
+    catch (error) {
+        console.error("Error during signup:", error);
+        res.status(500).send("Internal Server Error");
+        return
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const user: UserI = { firstName, lastName, email, password: hashedPassword };
+        const [user_result] = await con.execute("INSERT INTO users SET ?", user);
+      
+        // Define the type for the selected user rows
+        type SelectedUser = { id: number; firstName: string; lastName: string };
+        const [selected_user] = await con.execute<RowDataPacket[]>(
+          "SELECT id, firstName, lastName FROM users WHERE email = ?",
+          [email]
+        );
+      
+        const token = generateToken({
+          id: selected_user[0].id,
+          firstName: selected_user[0].firstName,
+          lastName: selected_user[0].lastName
+        });
+        
+        res.status(201).json({ token });
+      } catch (error) {
+        console.error("Error during signup:", error);
+        res.status(500).send("Internal Server Error");
+      }
+      
+      
+
 });
 
 // Middleware for token authentication
