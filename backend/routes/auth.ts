@@ -68,7 +68,7 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
 
 // Protected route
 router.get('/protected', authenticateToken, (req: Request, res: Response) => {
-    res.json({ message: 'Vous êtes autorisé', user: req.user });
+    res.json({ message: 'Vous êtes autorisé', user: (req as any ).user });
 });
 
 export default router;
