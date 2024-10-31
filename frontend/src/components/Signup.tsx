@@ -6,7 +6,7 @@ async function signup(
   fName: string,
   lName: string
 ) {
-  const response = await fetch(`${API_URL}/signup`, {
+  const response = await fetch(`${API_URL}/auth/signup`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -14,8 +14,8 @@ async function signup(
     body: JSON.stringify({
       email,
       password,
-      fName,
-      lName,
+      firstName: fName,
+      lastName: lName,
     }),
   });
   if (response.status !== 200) {

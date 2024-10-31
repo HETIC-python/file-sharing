@@ -28,6 +28,9 @@ services:
           - backend_node_modules:/usr/src/app/node_modules
         environment:
           - NODE_ENV=${NODE_ENV}
+          - DB_HOST=${DB_HOST}
+          - DB_USER=${DB_USER}
+          - DB_PASSWORD=${DB_PASSWORD}
         ports:
           - "4040:4040"
         depends_on:
