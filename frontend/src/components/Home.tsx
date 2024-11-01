@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { API_URL } from "../utils/api";
 import Layout from "./Layout";
 import { token_decoded } from "../utils/auth";
+import { useNavigate } from "react-router";
 
 export default function Home() {
   return (
@@ -31,24 +32,38 @@ type IFile = {
 
 function FilesList() {
   const [files, setFiles] = React.useState<IFile[]>([]);
+  const navigate = useNavigate();
 
+  const getFiles = async (userId: number) => {
+    try {
+      const res = await fetch(`${API_URL}/files/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage?.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log({ res });
+      if (res.status === 403) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+      if (!res.ok) {
+        throw new Error("Failed to fetch files");
+      }
+      const data = await res.json();
+      setFiles(data);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
   useEffect(() => {
     const token = token_decoded();
-    console.log(token);
-    if (!token) return;
-    fetch(`${API_URL}/files/${token.id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setFiles(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    console.log({token});
+    if (!token) {
+      navigate("/login");
+      return
+    };
+    getFiles(token.id);
   }, []);
 
   return (
@@ -138,7 +153,7 @@ function File({ file }: { file: IFile }) {
   return (
     <tr className="border-b border-blue-gray-200">
       <td className="py-3 px-4">{file.name}</td>
-      <td className="py-3 px-4">{file.size}</td>
+      <td className="py-3 px-4">{Math.round((Number(file.size) * (Math.pow(10, 6))))} ko</td>
       <td className="py-3 px-4">
         {copied ? (
           <span onClick={() => setCopied(false)} className="text-green-500">
