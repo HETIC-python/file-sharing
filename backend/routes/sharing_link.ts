@@ -6,6 +6,7 @@ import {sharing_link_schema} from "../schema/sharing_link_schema";
 import {generate} from "../controller/sharing_link_controller";
 import {App} from "../type/app";
 import exp from "constants";
+import { getAllFromUser } from "../controller/sharing_link_controller";
 dotenv.config();
 
 
@@ -22,5 +23,8 @@ export function getLinkRoutes(app: App) {
       next(error);
     }
   });
+
+  router.get("/sharing_links/:user_id", getAllFromUser(app));
+
   return router;
 };
