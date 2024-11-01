@@ -13,15 +13,13 @@ async function fileupload(file: FormData) {
     },
     body: file,
   });
-  if (response.status !== 200) {
-    throw new Error("Failed to sign up");
-  }
   return response.json();
 }
 const INPUT_WRAPPER_CLASS = "flex flex-col gap-4";
 export default function Fileupload() {
   const [file, setFile] = useState<File | null>(null);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log("form submitted");
@@ -33,9 +31,10 @@ export default function Fileupload() {
       if (res.success) {
         console.log("Success");
         setSuccess(true);
-      }
+      } else {
+        setError(res.message);
     }
-  };
+  };}
   
   if(success){
     return <Layout>
@@ -43,6 +42,14 @@ export default function Fileupload() {
         <div className="text-green-500">File uploaded successfully</div>
       </div>
     </Layout>
+  }
+  if (!success && error != "") {
+    return <Layout>
+      <div className="flex justify-center items-center">
+        <div className="text-red-500">{error}</div>
+      </div>
+    </Layout>
+    
   }
   return (
     <Layout>
