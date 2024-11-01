@@ -53,7 +53,7 @@ export function addFile(app: App) {
         }
         
         const user = await app.repository.userRepository.getOne(parseInt(req.params.user_id)).then(data =>{return data})
-        const storageDisponible = await app.repository.userRepository.getDisponibleStorage(parseInt(req.params.user_id)).then(data =>{return data})
+        const storageUsed = await app.repository.userRepository.getUsedStorage(parseInt(req.params.user_id)).then(data =>{return data})
 
         if (user===null){
             unlink(`upload/${file.filename}`, (err) => {
@@ -66,7 +66,7 @@ export function addFile(app: App) {
             return res.json({status :404, success : false, message: "User not found"})
         }
 
-        if (user.maxStorage < storageDisponible + file.size/10**9){
+        if (user.maxStorage < storageUsed + file.size/10**9){
             unlink(`upload/${file.filename}`, (err) => {
                 if (err) {
                     console.error(err)
@@ -97,7 +97,6 @@ export function download(app: App) {
         if (file === null){
             return res.json({status:404, success:false, message: "File not found"})
         }
-        console.log(sharing_link.expiresAt);
 
         if (new Date() > sharing_link.expiresAt){
             return res.json({status:403, success:false, message: "Link expired"})
