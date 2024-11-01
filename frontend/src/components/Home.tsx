@@ -52,8 +52,8 @@ function FilesList() {
       }
       const data = await res.json();
       setFiles(data);
-    } catch (error) {
-      console.error(error.message);
+    } catch (error: any) {
+      console.error(error?.message);
     }
   };
   useEffect(() => {
@@ -255,7 +255,7 @@ const Link = ({ link }: { link: any }) => {
 
   return (
     <tr className="border-b border-blue-gray-200">
-      <td className="py-3 px-4">{link?.name || "file"}</td>
+      <td className="py-3 px-4">{link?.name?.replace(/(\d+-)(\d+-)/,"")  || "file"}</td>
       <td className="py-3 px-4">
         {copied ? (
           <span onClick={() => setCopied(false)} className="text-green-500">
