@@ -19,7 +19,7 @@ function generateToken(user: { id: number,email: string} | null) {
             email: user.email
         },
         process.env.JWT_SECRET || 'default_secret', // Fallback secret for development
-        { expiresIn: '1h' }
+        { expiresIn: '7d' }
     );
 }
 
@@ -45,7 +45,6 @@ router.post('/login',
             return
         }
         const user = user_result[0] as any;
-        console.log(user);
         if (!bcrypt.compareSync(password, user.password)) {
             res.status(401).json({ token: "Identifiants incorrects" });
             return
@@ -82,7 +81,7 @@ router.post('/signup',
 
     const con = await connect();
     const { firstName, lastName, email, password } = req.body;
-    console.log(firstName, lastName, email, password);
+    console.log(firstName, lastName, email);
     try {
         const [user_result] = await con.execute("SELECT id FROM users WHERE email = ?", [email]);
         if ((user_result as Array<any>).length > 0) {
