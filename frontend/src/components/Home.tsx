@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { API_URL } from "../utils/api";
 import Layout from "./Layout";
+import { token_decoded } from "../utils/auth";
 
 export default function Home() {
   return (
@@ -46,6 +47,24 @@ function FilesList() {
     },
   ]);
 
+  useEffect(() => {
+    const token = token_decoded();
+    if (!token) return;
+    fetch(`${API_URL}/files/${token.id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setFiles(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   return (
     <div>
       <table className="table-auto">
@@ -86,14 +105,43 @@ const copyFile = async (fileId: number) => {
   }
   return res.json();
 };
+
+const shareFileLink = async (userId: number, fileId: number) => {
+  // /sharing_link/:user_id/:file_id
+  const res = await fetch(`${API_URL}/sharing_link/${userId}/${fileId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to share file");
+  }
+  return res.json();
+};
+
 function File({ file }: { file: IFile }) {
   const [copied, setCopied] = React.useState(false);
-  const handleCopyFile = async () => {
+  // const handleCopyFile = async () => {
+  //   try {
+  //     setCopied(false);
+  //     // const res = await copyFile(file.id);
+  //     await copyContent("opopopop");
+  //     setCopied(true);
+  //   } catch (error: any) {
+  //     console.error(error.message);
+  //   }
+  // };
+
+  const handleShareFile = async () => {
+    const token = token_decoded();
+    if (!token) return;
     try {
-      setCopied(false);
-      // const res = await copyFile(file.id);
-      await copyContent("opopopop");
-      setCopied(true);
+      const res = await shareFileLink(token?.id, file?.id);
+      if (res?.link) {
+        await copyContent(`${API_URL}${res.link?.link}`);
+        setCopied(true);
+      }
     } catch (error: any) {
       console.error(error.message);
     }
@@ -109,7 +157,7 @@ function File({ file }: { file: IFile }) {
           </span>
         ) : (
           <button
-            onClick={handleCopyFile}
+            onClick={handleShareFile}
             className="bg-blue-500 text-white px-2 rounded-xl"
           >
             Share

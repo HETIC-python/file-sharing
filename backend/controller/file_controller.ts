@@ -110,7 +110,6 @@ export function getFilesFromUser(app: App) {
     return async (req: Request, res: Response, next: NextFunction) => {
         const files = await app.repository.fileRepository.getAllFromUser(parseInt(req.params.user_id)).then(data =>{return data})        
         res.json(files)
-        res.send()
     }
 }
 

@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { API_URL } from "../utils/api";
 import Layout from "./Layout";
+import { useNavigate } from "react-router";
 async function signup(
   email: string,
   password: string,
@@ -33,6 +34,7 @@ export default function Signup() {
   const [fName, setFName] = useState("");
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -42,9 +44,7 @@ export default function Signup() {
       const res = await signup(email, password, fName, lName);
       if (res?.token) {
         localStorage.setItem("token", res.token);
-      }
-      if (res.success) {
-        console.log("Success");
+        navigate("/");
       }
     } catch (error: any) {
       setError(error.message || "Failed to login");

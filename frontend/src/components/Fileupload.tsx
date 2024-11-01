@@ -6,7 +6,7 @@ async function fileupload(file: FormData) {
   const decoded_token = token_decoded() satisfies { userId: string };
   if (!decoded_token) return;
   const response = await fetch(
-    `${API_URL}/upload/${decoded_token?.userId || 1}`,
+    `${API_URL}/upload/${decoded_token?.id || 1}`,
     {
       method: "POST",
       headers: {
