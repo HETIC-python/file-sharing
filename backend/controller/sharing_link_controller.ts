@@ -42,6 +42,13 @@ export function generate(app: App) {
     }
 }
 
+export function getAllFromUser(app: App) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        const shareLinks = await app.repository.sharingLinkRepository.getAllFromUser(parseInt(req.params.user_id)).then(data => {return data}).catch(err => {console.log(err); return null})
+        res.json({status:200, success:true, links: shareLinks})
+    }
+}
+
 function hasRight(app: App, file_id: number, user_id: number) {
 
         const hasRight = app.repository.fileRepository.hasRight({
