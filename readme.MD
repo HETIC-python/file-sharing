@@ -8,7 +8,7 @@
 
 - 1: `cp .env.example .env`
 - 2: `docker compose up`
-- 3: your project is launched at `http://localhost:517`
+- 3: your project is launched at `http://localhost:5173`
 
 ### membres
 
