@@ -5,6 +5,7 @@ import multer from "multer";
 import { addFile, download, getFilesFromUser } from "../controller/file_controller";
 import { file_schema } from "../schema/file_schema";
 import { App } from "../type/app";
+import { authenticateToken } from "./auth";
 dotenv.config();
 
 
@@ -31,12 +32,13 @@ export function getFileRoutes(app: App) {
   });
   router.get("/public_link/download/:hash", async (req, res, next) => {
     try {
+      console.log("Download file");
       await download(app)(req, res, next);
     } catch (err) {
       next(err);
     }});
 
-  router.get('/files/:user_id', getFilesFromUser(app));
+  router.get('/files/:user_id', authenticateToken, getFilesFromUser(app));
 
   return router;
 };
