@@ -20,9 +20,10 @@ export function getFileRepository(database: Pool): FileRepositoryI {
             const file = results[0];
             return Promise.resolve({id: file.id, filename: file.name, size: file.size, mimeType:file.mimeType, userId: file.user_id});
         },
-        insert(file: FileI): Promise<FileI> {
-            database.execute("INSERT INTO files (name, size, user_id) VALUES (?, ?, ?)", [file.filename, file.size, file.userId]);
-            return Promise.resolve({filename: file.filename, size: file.size, mimeType:file.mimeType, userId: file.userId});
+        async insert(file: FileI): Promise<FileI> {
+            const res = await database.execute("INSERT INTO files (name, size, user_id) VALUES (?, ?, ?)", [file.filename, file.size, file.userId]);
+            //@ts-ignore
+            return Promise.resolve({id: res[0].insertId,filename: file.filename, size: file.size, mimeType:file.mimeType, userId: file.userId});
         },
         update(file: FileI): Promise<FileI> {
             database.execute("UPDATE files SET name = ?, size = ?, user_id = ? WHERE id = ?", [file.filename, file.size, file.userId, file.id]);
