@@ -13,11 +13,14 @@ export function getSharingLinkRepository(database: Pool): SharingLinkRepositoryI
         getOne: async (id: number) => {
             const [results] = await database.execute("SELECT id, link, expires_at, file_id FROM links WHERE id = ?", [id]);
             //@ts-ignore
-            return results[0];
+            if (results.length === 0) return null;
+            const link = results[0];
+            return Promise.resolve({id: link.id, link: link.link, createdAt : link.created_at, expiresAt: link.expires_at, fileId: link.file_id});
         },
-        insert(sharingLink: SharingLinkI): Promise<SharingLinkI> {
-            database.execute("INSERT INTO links (link, expires_at, file_id) VALUES (?, ?, ?)", [sharingLink.link, sharingLink.expiresAt, sharingLink.fileId]);
-            return Promise.resolve({link: sharingLink.link, expiresAt: sharingLink.expiresAt, fileId: sharingLink.fileId, createdAt: sharingLink.createdAt });
+            async insert(sharingLink: SharingLinkI): Promise<SharingLinkI> {
+            const res = await database.execute("INSERT INTO links (link, expires_at, file_id) VALUES (?, ?, ?)", [sharingLink.link, sharingLink.expiresAt, sharingLink.fileId]);
+            //@ts-ignore
+            return Promise.resolve({id: res[0].insertId,link: sharingLink.link, expiresAt: sharingLink.expiresAt, fileId: sharingLink.fileId, createdAt: sharingLink.createdAt });
         },
         update(sharingLink: SharingLinkI): Promise<SharingLinkI> {
             database.execute("UPDATE links SET link = ?, expires_at = ?, file_id = ? WHERE id = ?", [sharingLink.link, sharingLink.expiresAt, sharingLink.fileId, sharingLink.id]);

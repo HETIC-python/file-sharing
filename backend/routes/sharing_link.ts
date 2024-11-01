@@ -3,7 +3,7 @@ import express from "express";
 import multer from "multer";
 import {checkSchema} from "express-validator";
 import {sharing_link_schema} from "../schema/sharing_link_schema";
-import {generate} from "../controller/sharing_link_controller";
+import {generate, getOne} from "../controller/sharing_link_controller";
 import {App} from "../type/app";
 import exp from "constants";
 import { getAllFromUser } from "../controller/sharing_link_controller";
@@ -22,6 +22,10 @@ export function getLinkRoutes(app: App) {
     } catch (error) {
       next(error);
     }
+  });
+
+  router.get("/sharing_link/:link_id", (req, res, next) => {
+    getOne(app)(req, res, next);
   });
 
   router.get("/sharing_links/:user_id", getAllFromUser(app));

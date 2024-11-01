@@ -8,7 +8,7 @@ export interface SharingLinkI {
 
 export interface SharingLinkRepositoryI {
     getAll: () => Promise<SharingLinkI[]>
-    getOne: (id: number) => Promise<SharingLinkI>
+    getOne: (id: number) => Promise<SharingLinkI | null>
     getAllFromUser: (user_id: number) => Promise<SharingLinkI[]>
     getOneByLink: (link: string) => Promise<SharingLinkI>
     insert: (link: SharingLinkI) => Promise<SharingLinkI>
