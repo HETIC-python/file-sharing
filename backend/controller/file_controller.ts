@@ -77,14 +77,14 @@ export function addFile(app: App) {
             return res.json({status :400, success : false, message: "Not enough storage"})
         }
 
-        app.repository.fileRepository.insert({id: 0,
+        const fileLoaded = await app.repository.fileRepository.insert({id: 0,
             filename: file.filename,
             size: file.size/10**9, // size in GB
             mimeType: file.mimetype,
             userId: parseInt(req.params.user_id)
-        }).then(data => console.log(data)).catch(err => console.log(err))
+        }).then(data =>{ return data}).catch(err => console.log(err))
 
-        res.json({status :201, success : true, message: "File uploaded successfully"})
+        res.json({status :201, success : true, message: "File uploaded successfully", file: fileLoaded})
     }
 }
 
