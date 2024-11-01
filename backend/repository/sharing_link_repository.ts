@@ -33,7 +33,7 @@ export function getSharingLinkRepository(database: Pool): SharingLinkRepositoryI
             return Promise.resolve({id: sharingLink.id, link: sharingLink.link, createdAt : sharingLink.created_at, expiresAt: sharingLink.expires_at, fileId: sharingLink.file_id});
         },
         getAllFromUser: async (user_id: number) => {
-            const [results] = await database.query("SELECT l.id, l.link, l.expires_at, l.file_id FROM links l JOIN files f ON l.file_id = f.id WHERE f.user_id = ?", [user_id]);
+            const [results] = await database.query("SELECT l.id, l.link, l.expires_at, l.file_id, f.name FROM links l JOIN files f ON l.file_id = f.id WHERE f.user_id = ? and l.expires_at >= NOW()", [user_id]);
             return results as SharingLinkI[];
         }
     };
