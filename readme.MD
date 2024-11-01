@@ -4,6 +4,6 @@
 
     - Jiad ABDUL
     - Paul Charbel
-    - Faith Glin-Dayi
+    - Faithgot Glin-Dayi
     - Ahmat Roushad
 
