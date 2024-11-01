@@ -1,13 +1,10 @@
 import dotenv from "dotenv";
 import express from "express";
+import { checkSchema } from "express-validator";
 import multer from "multer";
-import {checkSchema} from "express-validator";
-import {user_schema} from "../schema/user_schema";
-import {addFile,download, getFilesFromUser} from "../controller/file_controller";
-import {App} from "../type/app";
-import exp from "constants";
+import { addFile, download, getFilesFromUser } from "../controller/file_controller";
 import { file_schema } from "../schema/file_schema";
-import { sharing_link_schema } from "../schema/sharing_link_schema";
+import { App } from "../type/app";
 dotenv.config();
 
 

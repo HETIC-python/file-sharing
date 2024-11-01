@@ -14,5 +14,5 @@ export interface UserRepositoryI {
     insert: (user: UserI) => Promise<UserI>
     update: (user: UserI) => Promise<UserI>
     delete: (id: number) => Promise<void>
-    getDisponibleStorage: (id: number) => Promise<number>
+    getUsedStorage: (id: number) => Promise<number>
 }
