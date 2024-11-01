@@ -27,7 +27,7 @@ export function getSharingLinkRepository(database: Pool): SharingLinkRepositoryI
             return Promise.resolve({id: sharingLink.id, link: sharingLink.link, expiresAt: sharingLink.expiresAt, fileId: sharingLink.fileId, createdAt: sharingLink.createdAt});
         },
         getOneByLink: async (link: string) => {
-            const [results] = await database.execute("SELECT id, link, expires_at, file_id FROM links WHERE link = ?", [link]);
+            const [results] = await database.execute("SELECT id, link, expires_at, file_id FROM links WHERE link = ? ORDER BY id DESC", [link]);
             //@ts-ignore
             const sharingLink = results[0];
             return Promise.resolve({id: sharingLink.id, link: sharingLink.link, createdAt : sharingLink.created_at, expiresAt: sharingLink.expires_at, fileId: sharingLink.file_id});
