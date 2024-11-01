@@ -5,17 +5,14 @@ import Layout from "./Layout";
 async function fileupload(file: FormData) {
   const decoded_token = token_decoded() satisfies { userId: string };
   if (!decoded_token) return;
-  const response = await fetch(
-    `${API_URL}/upload/${decoded_token?.id || 1}`,
-    {
-      method: "POST",
-      headers: {
-        // "Content-Type": "",
-        Authorization: "Bearer " + localStorage?.getItem("token"),
-      },
-      body: file,
-    }
-  );
+  const response = await fetch(`${API_URL}/upload/${decoded_token?.id || 1}`, {
+    method: "POST",
+    headers: {
+      // "Content-Type": "",
+      Authorization: "Bearer " + localStorage?.getItem("token"),
+    },
+    body: file,
+  });
   if (response.status !== 200) {
     throw new Error("Failed to sign up");
   }
@@ -24,6 +21,7 @@ async function fileupload(file: FormData) {
 const INPUT_WRAPPER_CLASS = "flex flex-col gap-4";
 export default function Fileupload() {
   const [file, setFile] = useState<File | null>(null);
+  const [success, setSuccess] = useState(false);
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log("form submitted");
@@ -34,9 +32,18 @@ export default function Fileupload() {
       const res = await fileupload(formData);
       if (res.success) {
         console.log("Success");
+        setSuccess(true);
       }
     }
   };
+  
+  if(success){
+    return <Layout>
+      <div className="flex justify-center items-center">
+        <div className="text-green-500">File uploaded successfully</div>
+      </div>
+    </Layout>
+  }
   return (
     <Layout>
       <div className="flex justify-center items-center">

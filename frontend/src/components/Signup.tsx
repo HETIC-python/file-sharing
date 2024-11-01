@@ -50,6 +50,7 @@ export default function Signup() {
       setError(error.message || "Failed to login");
     }
   };
+
   return (
     <Layout>
       <div className="flex flex-col gap-5 justify-center items-center">
