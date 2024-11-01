@@ -58,17 +58,25 @@ function FilesList() {
   };
   useEffect(() => {
     const token = token_decoded();
-    console.log({token});
+    console.log({ token });
     if (!token) {
       navigate("/login");
-      return
-    };
+      return;
+    }
     getFiles(token.id);
   }, []);
 
+  if (files?.length === 0) {
+    return (
+      <>
+        <h1>No shared links, you can create by sharing your files</h1>
+      </>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-5 w-full items-center justify-center">
-      <h2 className="font-bolb text-2xl">Your shared links</h2>
+      <h2 className="font-bolb text-2xl">Your uploaded files</h2>
       <div className="overflow-x-auto w-full">
         <table className="min-w-full bg-white shadow-md rounded-xl">
           <thead>
@@ -152,8 +160,10 @@ function File({ file }: { file: IFile }) {
   };
   return (
     <tr className="border-b border-blue-gray-200">
-      <td className="py-3 px-4">{file.name}</td>
-      <td className="py-3 px-4">{Math.round((Number(file.size) * (Math.pow(10, 6))))} ko</td>
+      <td className="py-3 px-4">{file?.name?.replace(/(\d+-)(\d+-)/, "")}</td>
+      <td className="py-3 px-4">
+        {Math.round(Number(file.size) * Math.pow(10, 6))} ko
+      </td>
       <td className="py-3 px-4">
         {copied ? (
           <span onClick={() => setCopied(false)} className="text-green-500">
